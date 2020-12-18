@@ -1,8 +1,15 @@
 ---
-- hosts: all
-  become: yes
+- hosts: myserver  #server host or group name 
   tasks:
-   - name: print out the hostname of target
-     command: hostname
-   - name: print out the date/time of target
-     command: date
+
+	- name: install apache2
+      apt: name=apache2 update_cache=yes state=latest
+
+    - name: enabled mod_rewrite
+      apache2_module: name=rewrite state=present
+      notify:
+        - restart apache2
+
+  handlers:
+    - name: restart apache2
+      service: name=apache2 state=restarted
